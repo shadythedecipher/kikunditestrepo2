@@ -22,6 +22,7 @@ jobs:
         with:
           java-version: 11
           distribution: 'adopt'
+          cache: gradle
       - name: Build with Gradle
         run: ./gradlew build --scan
 
@@ -43,10 +44,9 @@ jobs:
       #          username: ${{ secrets.AzureAppService_ContainerUsername_bf3e13c2f50e437daa5d7da6f9bf2e30 }}
       #          password: ${{ secrets.AzureAppService_ContainerPassword_c90afa951f7441c9adf247d1cb29bf1f }}
 
-      #    - name: Building a composed image
-      #      run: docker-compose up -d
+#      - name: Building a composed image
+#        run: docker-compose up -d
       - name: Build and push container image to registry
-        run: docker-compose up -d
 
       - name: Pushing the image
         uses: docker/build-push-action@v2
