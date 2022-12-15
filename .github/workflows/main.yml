@@ -46,7 +46,7 @@ jobs:
 
 #      - name: Building a composed image
 #        run: docker-compose up -d
-      - name: Build and push container image to registry
+#      - name: Build and push container image to registry
 
       - name: Pushing the image
         uses: docker/build-push-action@v2
