@@ -1,38 +1,123 @@
 package com.mingati.kikunditestrepo.controller;
 
+import com.mingati.kikunditestrepo.Configfile;
+import com.mingati.kikunditestrepo.dto.OTPDto;
 import com.mingati.kikunditestrepo.dto.UserDto;
+import com.mingati.kikunditestrepo.events.OTPEvent;
 import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.service.UserService;
 import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Optional;
+import java.util.Random;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-
+    int randomNumber;
     public final UserService service;
+    @Autowired
+    ApplicationEventPublisher publisherEvent;
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/create")
-    public ApiResponse<UserDto> createCustomer(@Valid @RequestBody UserDto userdto) {
-//        Twilio.init(System.getenv("AC1d0018c82893b0289bb12c7d3f0dbcab"), System.getenv("Redacted"));
-//
-//        Message.creator(new PhoneNumber("+255714867576"),
-//                new PhoneNumber("MGfa76020f63c18e08d8a70cd8fb4a4a2d"), "Hello from Twilio 📞").create();
-        return Optional.of(userdto)
-                .map(service::createCustomer)
-                .map(resp -> ApiResponse.<UserDto>builder()
+    public ApiResponse<UserDto> createCustomer(@Valid @RequestBody UserDto userdto, final HttpServletRequest request) {
+
+        UserDto resp= service.createCustomer(userdto);
+        if(resp.getEmail()==null){
+            return ApiResponse.<UserDto>builder()
+                        .responseObject(null)
+                        .hasError(true)
+                        .successMessage("Failed to create kikundi user successfully")
+                        .build();
+
+        }else {
+//            Random random = new Random();
+//            randomNumber = random.nextInt(10000);
+//            String otp=String.valueOf(randomNumber);
+            publisherEvent.publishEvent(new OTPEvent(resp, applicationUrl(request)));
+            return ApiResponse.<UserDto>builder()
                         .responseObject(resp)
                         .hasError(false)
                         .successMessage("created successfully with id %d ")
-                        .build()).get();
+                        .build();
+        }
+    }
 
+    @GetMapping("/verifyRegistration")
+    public ApiResponse<String> verifyRegistration(@RequestParam("token") String token) {
+        String result = service.validateVerificationToken(token);
+        if(result.equalsIgnoreCase("valid")) {
+            return ApiResponse.<String>builder().responseObject(null).hasError(false).successMessage("User verified successfully").build();
+        }
+        return ApiResponse.<String>builder().responseObject(null).hasError(true).successMessage("Failed to verify a user").build();
+    }
+    private String applicationUrl(HttpServletRequest request) {
+        return "http://" +
+                request.getServerName() +
+                ":" +
+                request.getServerPort() +
+                request.getContextPath();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/verifyOTP")
+    public ApiResponse<String> verifyOTP(@Valid @RequestBody OTPDto dto) {
+        final String ACCOUNT_SID = Configfile.ACCOUNT_SID;
+        final String AUTH_TOKEN = Configfile.AUTH_TOKEN;
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        Twilio.setUsername(ACCOUNT_SID);
+        Twilio.setPassword(AUTH_TOKEN);
+        Random random = new Random();
+        randomNumber = random.nextInt(10000);
+
+//        Message message = Message.creator(
+//                        new com.twilio.type.PhoneNumber(resp.getPhone()),
+//                        new com.twilio.type.PhoneNumber("+12536525117"),
+//                        "Otp is "+randomNumber)
+//                .create();
+
+        if(Integer.parseInt(dto.getOtp())==randomNumber){
+
+            return ApiResponse.<String>builder()
+                    .responseObject(null)
+                    .hasError(false)
+                    .successMessage("OTP Verified successfully")
+                    .build();
+
+        }else {
+
+            return ApiResponse.<String>builder()
+                    .responseObject(null)
+                    .hasError(true)
+                    .successMessage("Failed to verify OTP Try Again")
+                    .build();
+        }
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/resendVerifyOTP")
+    public ApiResponse<String> resendOTP() {
+
+        Random random = new Random();
+        randomNumber = random.nextInt(10000);
+
+//        Message message = Message.creator(
+//                        new com.twilio.type.PhoneNumber(resp.getPhone()),
+//                        new com.twilio.type.PhoneNumber("+12536525117"),
+//                        "Otp is "+randomNumber)
+//                .create();
+        return ApiResponse.<String>builder()
+                .successMessage("ss")
+                .errors(null)
+                .responseObject("sucess")
+                .build();
 
     }
     @GetMapping(value = "/greetings")

@@ -27,6 +27,9 @@ public class UserBo extends BaseBo {
     private String email;
     @Column
     private String password;
+    @Column
+    boolean enabled;
+
 
 
 }

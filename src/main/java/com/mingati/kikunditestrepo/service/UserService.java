@@ -12,4 +12,8 @@ public interface UserService {
      * @return
      */
     UserDto createCustomer(UserDto userDto);
+
+    void saveVerificationTokenForUser(String token, UserDto user);
+
+    String validateVerificationToken(String token);
 }

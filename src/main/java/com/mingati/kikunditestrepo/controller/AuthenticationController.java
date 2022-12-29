@@ -23,7 +23,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping(value = "login")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) {
         return Optional.of(loginRequest)
                 .map(authenticationService::login).get();

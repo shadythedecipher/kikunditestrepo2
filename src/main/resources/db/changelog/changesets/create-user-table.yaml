@@ -38,6 +38,9 @@ databaseChangeLog:
                   name: phone
                   type: varchar2(15)
               - column:
+                  name: enabled
+                  type: boolean
+              - column:
                   name: date_created
                   type: datetime
 
