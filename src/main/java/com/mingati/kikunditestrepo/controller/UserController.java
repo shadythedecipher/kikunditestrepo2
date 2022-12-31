@@ -1,13 +1,11 @@
 package com.mingati.kikunditestrepo.controller;
 
-import com.mingati.kikunditestrepo.Configfile;
 import com.mingati.kikunditestrepo.dto.OTPDto;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.events.EmailEvent;
 import com.mingati.kikunditestrepo.events.OtpEvent;
 import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.service.UserService;
-import com.twilio.Twilio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
