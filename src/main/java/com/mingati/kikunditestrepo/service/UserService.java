@@ -16,4 +16,6 @@ public interface UserService {
     void saveVerificationTokenForUser(String token, UserDto user);
 
     String validateVerificationToken(String token);
+
+    void saveVerificationOtpForUser(String otp, UserDto user);
 }

@@ -2,11 +2,12 @@ package com.mingati.kikunditestrepo.service.impl;
 
 
 import com.mingati.kikunditestrepo.base.UserBo;
+import com.mingati.kikunditestrepo.base.VerificationOtp;
 import com.mingati.kikunditestrepo.base.VerificationToken;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.exception.CreationValidationException;
-import com.mingati.kikunditestrepo.repository.ApiTokenRepository;
 import com.mingati.kikunditestrepo.repository.UserRepository;
+import com.mingati.kikunditestrepo.repository.VerificationOtpRepository;
 import com.mingati.kikunditestrepo.repository.VerificationTokenRepository;
 import com.mingati.kikunditestrepo.service.UserService;
 import com.mingati.kikunditestrepo.validator.user.UserValidator;
@@ -28,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
+    @Autowired
+    VerificationOtpRepository verificationOtpRepository;
     @Autowired
     private List<UserValidator> UserValidatorList;
     @Autowired
@@ -52,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveVerificationTokenForUser(String token, UserDto user) {
-        UserBo userbo=modelMapper.map(user, UserBo.class);
+        UserBo userbo=userRepository.findByEmail(user.getEmail()).get();
 
         VerificationToken verificationToken
                 = new VerificationToken(userbo, token);
@@ -82,5 +85,13 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         userRepository.save(user);
         return "valid";
+    }
+
+    @Override
+    public void saveVerificationOtpForUser(String otp, UserDto user) {
+        UserBo userbo=userRepository.findByEmail(user.getEmail()).get();
+        VerificationOtp otp1= new VerificationOtp(userbo,otp);
+        verificationOtpRepository.save(otp1);
+
     }
 }

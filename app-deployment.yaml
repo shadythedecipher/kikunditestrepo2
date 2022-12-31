@@ -1,20 +1,35 @@
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: springboot-postgres-deployment
+#spec:
+#  selector:
+#    matchLabels:
+#      app: springboot-k8s-postgres
+#  replicas: 1
+#  template:
+#    metadata:
+#      labels:
+#        app: springboot-k8s-postgres
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: springboot-postgres-deployment
+  name: demo-backend
 spec:
   selector:
     matchLabels:
-      app: springboot-k8s-postgres
-  replicas: 10
+      app: demo-backend
+  replicas: 3
   template:
     metadata:
       labels:
-        app: springboot-k8s-postgres
+        app: demo-backend
     spec:
       containers:
         - name: postgresdbapp
           image: docker.io/shadythedecipher/kikundiwebapp:2.0
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080
           env:   # Setting Enviornmental Variables
@@ -46,17 +61,3 @@ spec:
 #                  name : postgres-secrets
 #                  key :  password
 
----
-
-apiVersion: v1 # Kubernetes API version
-kind: Service # Kubernetes' resource kind we are creating
-metadata: # Metadata of the resource kind we are creating
-  name: springboot-crud-svc
-spec:
-  selector:
-    app: springboot-k8s-postgres
-  ports:
-    - protocol: "TCP"
-      port: 8080 # The port that the service is running on in the cluster
-      targetPort: 8080 # The port exposed by the service
-  type: NodePort # type of the service.

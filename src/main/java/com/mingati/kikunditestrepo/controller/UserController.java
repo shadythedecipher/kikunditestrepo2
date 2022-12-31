@@ -3,7 +3,8 @@ package com.mingati.kikunditestrepo.controller;
 import com.mingati.kikunditestrepo.Configfile;
 import com.mingati.kikunditestrepo.dto.OTPDto;
 import com.mingati.kikunditestrepo.dto.UserDto;
-import com.mingati.kikunditestrepo.events.OTPEvent;
+import com.mingati.kikunditestrepo.events.EmailEvent;
+import com.mingati.kikunditestrepo.events.OtpEvent;
 import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.service.UserService;
 import com.twilio.Twilio;
@@ -34,18 +35,17 @@ public class UserController {
             return ApiResponse.<UserDto>builder()
                         .responseObject(null)
                         .hasError(true)
-                        .successMessage("Failed to create kikundi user successfully")
+                        .successMessage("Failed to create kikundi user")
                         .build();
 
         }else {
-//            Random random = new Random();
-//            randomNumber = random.nextInt(10000);
-//            String otp=String.valueOf(randomNumber);
-            publisherEvent.publishEvent(new OTPEvent(resp, applicationUrl(request)));
+
+            publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
+            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
             return ApiResponse.<UserDto>builder()
-                        .responseObject(resp)
+                        .responseObject(null)
                         .hasError(false)
-                        .successMessage("created successfully with id %d ")
+                        .successMessage("created successfully")
                         .build();
         }
     }
@@ -69,19 +69,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/verifyOTP")
     public ApiResponse<String> verifyOTP(@Valid @RequestBody OTPDto dto) {
-        final String ACCOUNT_SID = Configfile.ACCOUNT_SID;
-        final String AUTH_TOKEN = Configfile.AUTH_TOKEN;
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
-        Twilio.setUsername(ACCOUNT_SID);
-        Twilio.setPassword(AUTH_TOKEN);
-        Random random = new Random();
-        randomNumber = random.nextInt(10000);
-
-//        Message message = Message.creator(
-//                        new com.twilio.type.PhoneNumber(resp.getPhone()),
-//                        new com.twilio.type.PhoneNumber("+12536525117"),
-//                        "Otp is "+randomNumber)
-//                .create();
 
         if(Integer.parseInt(dto.getOtp())==randomNumber){
 
