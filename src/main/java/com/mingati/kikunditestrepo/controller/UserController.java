@@ -41,7 +41,7 @@ public class UserController {
         }else {
 
             publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
-            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
+//            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
             return ApiResponse.<UserDto>builder()
                         .responseObject(null)
                         .hasError(false)
