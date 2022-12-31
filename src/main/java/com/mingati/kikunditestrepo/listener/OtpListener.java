@@ -1,5 +1,6 @@
 package com.mingati.kikunditestrepo.listener;
 
+import com.mingati.kikunditestrepo.Configfile;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.events.OtpEvent;
 import com.mingati.kikunditestrepo.service.UserService;
