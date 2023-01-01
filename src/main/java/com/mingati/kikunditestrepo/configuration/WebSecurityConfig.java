@@ -37,7 +37,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/create",
             "/verifyRegistration",
-            "/reset-password-request/{email}"
+            "/reset-password-request/{email}",
+            "/swagger-ui/" ,
+            "/swagger-ui/index.html",
+            "/login",
+
     };
 
     private static final String[] NOT_SECURED = {
