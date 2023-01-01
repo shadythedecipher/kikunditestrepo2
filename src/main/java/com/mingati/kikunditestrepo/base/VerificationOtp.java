@@ -13,8 +13,11 @@ public class VerificationOtp {
 
     //Expiration time 10 minutes
     private static  final int EXPIRATION_TIME = 10;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_otp_gen")
+    @SequenceGenerator(name = "verification_otp_gen", sequenceName = "verification_otp_seq",allocationSize = 1)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     //token/otp
@@ -27,6 +30,9 @@ public class VerificationOtp {
             nullable = false,
             foreignKey = @ForeignKey(name = "FK_USER_VERIFY_TOKEN"))
     private UserBo user;
+
+
+
 
     public VerificationOtp(UserBo user, String otp) {
         super();

@@ -2,6 +2,7 @@ package com.mingati.kikunditestrepo.dto;
 
 import lombok.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -25,7 +26,8 @@ public class UserDto {
     private String password;
 
     public UserDto hashPassword() {
-        this.password = DigestUtils.sha256Hex(password);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode(password);
         return this;
     }
 

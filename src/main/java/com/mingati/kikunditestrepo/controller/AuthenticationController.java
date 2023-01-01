@@ -24,9 +24,11 @@ public class AuthenticationController {
 
     @PostMapping(value = "login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) {
-        return Optional.of(loginRequest)
-                .map(authenticationService::login).get();
+    public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
+        if (loginRequest == null) throw new NullPointerException();
+        LoginResponse login = authenticationService.login(loginRequest);
+        if (login == null) throw new java.util.NoSuchElementException("No value present");
+        return login;
     }
     @GetMapping(value = "/reset-password-request/{email}")
     @ResponseStatus(HttpStatus.OK)

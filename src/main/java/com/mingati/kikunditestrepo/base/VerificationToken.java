@@ -14,8 +14,11 @@ public class VerificationToken {
 
     //Expiration time 10 minutes
     private static  final int EXPIRATION_TIME = 10;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "verification_token_gen")
+    @SequenceGenerator(name = "verification_token_gen", sequenceName = "verification_token_seq",allocationSize = 1)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     //token/otp

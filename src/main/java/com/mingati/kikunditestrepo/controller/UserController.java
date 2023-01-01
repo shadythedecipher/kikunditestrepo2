@@ -39,7 +39,7 @@ public class UserController {
         }else {
 
             publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
-            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
+//            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
             return ApiResponse.<UserDto>builder()
                         .responseObject(null)
                         .hasError(false)
@@ -54,7 +54,7 @@ public class UserController {
         if(result.equalsIgnoreCase("valid")) {
             return ApiResponse.<String>builder().responseObject(null).hasError(false).successMessage("User verified successfully").build();
         }
-        return ApiResponse.<String>builder().responseObject(null).hasError(true).successMessage("Failed to verify a user").build();
+        return ApiResponse.<String>builder().responseObject(null).hasError(true).successMessage("Expired token failed to verify a user").build();
     }
     private String applicationUrl(HttpServletRequest request) {
         return "http://" +
@@ -110,5 +110,11 @@ public class UserController {
 
         return ResponseEntity.ok().body("hi there welcome to kikundi api version 2");
     }
+    @GetMapping(value = "/greeting")
+    public ResponseEntity<String> greeting(){
+
+        return ResponseEntity.ok().body("hi there welcome to kikundi api version 2");
+    }
+
 
 }

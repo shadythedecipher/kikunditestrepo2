@@ -5,7 +5,7 @@ databaseChangeLog:
       author: shadrack
       changes:
         - createTable:
-            tableName: userTable
+            tableName: user_table
             columns:
               - column:
                   name: id
@@ -50,7 +50,7 @@ databaseChangeLog:
       author: shadrack
       changes:
         - addColumn:
-            tableName: userTable
+            tableName: user_table
             columns:
               - column:
                   name: zone_id
