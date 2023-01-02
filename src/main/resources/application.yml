@@ -1,21 +1,53 @@
-server:
-  port: 8080
+#for kubernaties deployment
+#server:
+#  port: 8080
+#
+#spring:
+#  profiles:
+#    active: Prod
+#  jpa:
+#    database: POSTGRESQL
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#  datasource:
+#    platform: postgres
+#    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}?useSSL=false     #//localhost:5432/kikundi
+#    username: ${DB_USERNAME} #postgres #
+#    password: ${DB_PASSWORD} #shady987654321 #
+#    driverClassName: org.postgresql.Driver
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#jwt:
+#  secret: javainuse
+#secret: javainuse
+---
+#server:
+#  port: 8080
+#
+#spring:
+#  profiles:
+#    active: dev
+#  jpa:
+#    database: POSTGRESQL
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: update
+#  datasource:
+#    platform: postgres
+#    url: jdbc:postgresql://localhost:5432/kikundi_d    #//${DB_HOST}/${DB_NAME}?useSSL=false
+#    username: postgres #${DB_USERNAME}
+#    password: shady987654321 #${DB_PASSWORD} #
+#    driverClassName: org.postgresql.Driver
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#jwt:
+#  secret: javainuse
+#secret: javainuse
 
-spring:
-  jpa:
-    database: POSTGRESQL
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-  datasource:
-    platform: postgres
-    url: jdbc:postgresql://localhost:5432/kikundi    #//${DB_HOST}/${DB_NAME}?useSSL=false
-    username: postgres #${DB_USERNAME}
-    password: shady987654321 #${DB_PASSWORD} #
-    driverClassName: org.postgresql.Driver
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+
 ---
 server:
   port: 8080

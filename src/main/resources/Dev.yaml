@@ -1,0 +1,49 @@
+---
+server:
+  port: 8080
+
+spring:
+  #  profiles:
+  #    active: dev
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/kikundi_d    #//${DB_HOST}/${DB_NAME}?useSSL=false
+    username: postgres #${DB_USERNAME}
+    password: shady987654321 #${DB_PASSWORD} #
+    driverClassName: org.postgresql.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+jwt:
+  secret: javainuse
+secret: javainuse
+---
+#for docker deployment
+server:
+  port: 8080
+
+spring:
+  #  profiles:
+  #    active: dev
+  jpa:
+    database: POSTGRESQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://postgresqldb:5432/kikundi_d    #//${DB_HOST}/${DB_NAME}?useSSL=false
+    username: postgres #${DB_USERNAME}
+    password: shady987654321 #${DB_PASSWORD} #
+    driverClassName: org.postgresql.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+jwt:
+  secret: javainuse
+secret: javainuse
