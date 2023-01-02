@@ -1,17 +1,24 @@
 package com.mingati.kikunditestrepo.configuration;
 
 
+import com.mingati.kikunditestrepo.filter.JwtFilter;
 import com.mingati.kikunditestrepo.security.CustomerAuthenticationFilter;
 import com.mingati.kikunditestrepo.security.UserAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
@@ -25,6 +32,12 @@ import java.util.stream.Collectors;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserAuthenticationProvider userAuthenticationProvider;
+    @Autowired
+    private MyDatabaseUserDetailsService userService;
+
+    @Autowired
+    private JwtFilter jwtFilter;
+
 
     private static final String[] SWAGGER_WHITELIST = {
             // -- swagger ui
@@ -37,7 +50,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/create",
             "/verifyRegistration",
-            "/reset-password-request/{email}"
+            "/reset-password-request/{email}",
+            "/swagger-ui/" ,
+            "/swagger-ui/index.html",
+            "/login",
+
     };
 
     private static final String[] NOT_SECURED = {
@@ -67,6 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     private CustomerAuthenticationFilter authenticationFilter() throws Exception {
@@ -77,11 +95,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return filter;
     }
 
+//
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.authenticationProvider(userAuthenticationProvider);
+//    }
 
+//    @Bean
+//    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(userAuthenticationProvider);
+        auth
+                .inMemoryAuthentication();
+               auth .userDetailsService(userService);
     }
 
-
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

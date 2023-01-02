@@ -2,11 +2,13 @@ package com.mingati.kikunditestrepo.service.impl;
 
 
 import com.mingati.kikunditestrepo.base.UserBo;
+import com.mingati.kikunditestrepo.base.UserBoRole;
 import com.mingati.kikunditestrepo.base.VerificationOtp;
 import com.mingati.kikunditestrepo.base.VerificationToken;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.exception.CreationValidationException;
 import com.mingati.kikunditestrepo.repository.UserRepository;
+import com.mingati.kikunditestrepo.repository.UserRoleRepository;
 import com.mingati.kikunditestrepo.repository.VerificationOtpRepository;
 import com.mingati.kikunditestrepo.repository.VerificationTokenRepository;
 import com.mingati.kikunditestrepo.service.UserService;
@@ -31,6 +33,8 @@ public class UserServiceImpl implements UserService {
     private VerificationTokenRepository verificationTokenRepository;
     @Autowired
     VerificationOtpRepository verificationOtpRepository;
+    @Autowired
+    UserRoleRepository userRoleRepository;
     @Autowired
     private List<UserValidator> UserValidatorList;
     @Autowired
@@ -74,6 +78,13 @@ public class UserServiceImpl implements UserService {
         }
 
         UserBo user = verificationToken.getUser();
+      UserBoRole role= new UserBoRole();
+      role.setRole("User");
+     UserBoRole savedRole= userRoleRepository.save(role);
+        System.out.println("%$55$^%4%$4$5"+savedRole.getId());
+
+
+//        System.out.println("$$$$$$$$$$$$"+ user.toString());
         Calendar cal = Calendar.getInstance();
 
         if ((verificationToken.getExpirationTime().getTime()
@@ -81,9 +92,10 @@ public class UserServiceImpl implements UserService {
             verificationTokenRepository.delete(verificationToken);
             return "expired";
         }
-
+        user.setUser(savedRole);
         user.setEnabled(true);
-        userRepository.save(user);
+       UserBo saved= userRepository.save(user);
+        System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
         return "valid";
     }
 

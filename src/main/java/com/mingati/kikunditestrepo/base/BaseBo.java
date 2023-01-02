@@ -14,7 +14,7 @@ public abstract class BaseBo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    public Long id;
     @Column(name = "date_created")
     protected LocalDateTime dateCreated= LocalDateTime.now();
 

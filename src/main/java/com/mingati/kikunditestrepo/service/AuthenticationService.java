@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthenticationService {
-    LoginResponse login(LoginRequest loginRequest);
+    LoginResponse login(LoginRequest loginRequest) throws Exception;
 
     void requestPasswordRequest(String email) throws KikundiEntityNotFound;
 }

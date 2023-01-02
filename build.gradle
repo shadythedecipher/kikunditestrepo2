@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	implementation 'org.liquibase:liquibase-core'
@@ -33,6 +33,15 @@ dependencies {
 	implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
 	// https://mvnrepository.com/artifact/javax.mail/mail
 	implementation group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
+	implementation 'org.apache.james:james-project:3.6.0'
+	implementation('io.springfox:springfox-swagger2:3.0.0')
+	implementation('io.springfox:springfox-swagger-ui:3.0.0')
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	// https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
+//	implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.0.0'
+// https://mvnrepository.com/artifact/org.springframework.security/spring-security-jwt
+	implementation group: 'org.springframework.security', name: 'spring-security-jwt', version: '1.1.1.RELEASE'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 
 	implementation 'com.sendgrid:sendgrid-java:4.0.1'
