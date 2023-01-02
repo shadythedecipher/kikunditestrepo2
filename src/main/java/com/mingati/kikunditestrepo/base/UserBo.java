@@ -20,7 +20,6 @@ public class UserBo {
     @SequenceGenerator(name = "user_table_gen", sequenceName = "user_table_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
-
     @Column(name ="first_name")
     private String firstName;
     @Column(name ="last_name")

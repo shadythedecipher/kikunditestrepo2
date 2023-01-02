@@ -98,6 +98,35 @@ public class UserServiceImpl implements UserService {
         System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
         return "valid";
     }
+    public String validateVerificationOTP(Long userId) {
+        Optional<VerificationOtp> verificationOtp
+                = verificationOtpRepository.findById( userId);
+        if (verificationOtp==null){
+            return "invalid";
+        }
+        VerificationOtp verifiedOTP = verificationOtp.get();
+
+        UserBo user = verifiedOTP.getUser();
+        UserBoRole role= new UserBoRole();
+        role.setRole("User");
+        UserBoRole savedRole= userRoleRepository.save(role);
+        System.out.println("%$55$^%4%$4$5"+savedRole.getId());
+
+
+//        System.out.println("$$$$$$$$$$$$"+ user.toString());
+        Calendar cal = Calendar.getInstance();
+
+        if ((verifiedOTP.getExpirationTime().getTime()
+                - cal.getTime().getTime()) <= 0) {
+            verificationOtpRepository.delete(verifiedOTP);
+            return "expired";
+        }
+        user.setUser(savedRole);
+        user.setEnabled(true);
+       UserBo saved= userRepository.save(user);
+        System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
+        return "valid";
+    }
 
     @Override
     public void saveVerificationOtpForUser(String otp, UserDto user) {
@@ -105,5 +134,10 @@ public class UserServiceImpl implements UserService {
         VerificationOtp otp1= new VerificationOtp(userbo,otp);
         verificationOtpRepository.save(otp1);
 
+    }
+
+    @Override
+    public Optional<UserBo> getUser(String username) {
+        return userRepository.findByEmail(username);
     }
 }

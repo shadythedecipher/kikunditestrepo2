@@ -1,5 +1,6 @@
 package com.mingati.kikunditestrepo.controller;
 
+import com.mingati.kikunditestrepo.base.UserBo;
 import com.mingati.kikunditestrepo.dto.OTPDto;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.events.EmailEvent;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 import java.util.Random;
 
 @RestController
@@ -39,7 +41,7 @@ public class UserController {
         }else {
 
             publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
-//            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
+            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
             return ApiResponse.<UserDto>builder()
                         .responseObject(null)
                         .hasError(false)
@@ -68,40 +70,35 @@ public class UserController {
     @PostMapping(value = "/verifyOTP")
     public ApiResponse<String> verifyOTP(@Valid @RequestBody OTPDto dto) {
 
-        if(Integer.parseInt(dto.getOtp())==randomNumber){
+        Optional<UserBo> userToBeVerified= service.getUser(dto.getUsername());
+        if (userToBeVerified==null){
 
-            return ApiResponse.<String>builder()
-                    .responseObject(null)
-                    .hasError(false)
-                    .successMessage("OTP Verified successfully")
-                    .build();
-
-        }else {
-
-            return ApiResponse.<String>builder()
+             return ApiResponse.<String>builder()
                     .responseObject(null)
                     .hasError(true)
-                    .successMessage("Failed to verify OTP Try Again")
+                    .successMessage("No user for the given OTPFailed to verify OTP Try Again")
                     .build();
         }
+        else {
+            UserBo foundUser = userToBeVerified.get();
+            String result = service.validateVerificationOTP(foundUser.getId());
+            if(result.equalsIgnoreCase("valid")) {
+                return ApiResponse.<String>builder().responseObject(null).hasError(false).successMessage("Phone number verified successfully").build();
+            }
+            return ApiResponse.<String>builder().responseObject(null).hasError(true).successMessage("Expired OTP failed to verify OTP").build();
+
+        }
+
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/resendVerifyOTP")
     public ApiResponse<String> resendOTP() {
 
-        Random random = new Random();
-        randomNumber = random.nextInt(10000);
-
-//        Message message = Message.creator(
-//                        new com.twilio.type.PhoneNumber(resp.getPhone()),
-//                        new com.twilio.type.PhoneNumber("+12536525117"),
-//                        "Otp is "+randomNumber)
-//                .create();
         return ApiResponse.<String>builder()
                 .successMessage("ss")
                 .errors(null)
-                .responseObject("sucess")
+                .responseObject("Working on Resend")
                 .build();
 
     }

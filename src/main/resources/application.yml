@@ -1,7 +1,11 @@
+#k8s
+---
 server:
   port: 8080
 
 spring:
+#  profiles:
+#    active: k8s
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -9,13 +13,17 @@ spring:
       ddl-auto: update
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/kikundi    #//${DB_HOST}/${DB_NAME}?useSSL=false
-    username: postgres #${DB_USERNAME}
-    password: shady987654321 #${DB_PASSWORD} #
+    url: jdbc:postgresql://${DB_HOST}/${DB_NAME}?useSSL=false     #//localhost:5432/kikundi
+    username: ${DB_USERNAME} #postgres
+    password: ${DB_PASSWORD} #shady987654321
     driverClassName: org.postgresql.Driver
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+jwt:
+  secret: javainuse
+secret: javainuse
+
 ---
 server:
   port: 8080
