@@ -29,7 +29,7 @@ spec:
       containers:
         - name: postgresdbapp
           image: docker.io/shadythedecipher/kikundiwebapp:2.0
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
           env:   # Setting Enviornmental Variables
