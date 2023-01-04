@@ -19,6 +19,7 @@ import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class UserController {
     int randomNumber;
     public final UserService service;
