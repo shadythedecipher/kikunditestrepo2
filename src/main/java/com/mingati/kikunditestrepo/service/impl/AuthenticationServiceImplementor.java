@@ -1,6 +1,8 @@
 package com.mingati.kikunditestrepo.service.impl;
 import com.mingati.kikunditestrepo.base.UserBo;
 import com.mingati.kikunditestrepo.configuration.MyDatabaseUserDetailsService;
+import com.mingati.kikunditestrepo.dto.UserDto;
+import com.mingati.kikunditestrepo.events.EmailEvent;
 import com.mingati.kikunditestrepo.exception.KikundiEntityNotFound;
 import com.mingati.kikunditestrepo.exception.UserLoginException;
 import com.mingati.kikunditestrepo.repository.ApiTokenRepository;
@@ -11,8 +13,9 @@ import com.mingati.kikunditestrepo.security.LoginRequest;
 import com.mingati.kikunditestrepo.security.LoginResponse;
 import com.mingati.kikunditestrepo.service.AuthenticationService;
 import lombok.AllArgsConstructor;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,8 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class AuthenticationServiceImplementor implements AuthenticationService {
@@ -34,31 +36,21 @@ public class AuthenticationServiceImplementor implements AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
+    ApplicationEventPublisher publisher;
+    @Autowired
+    ModelMapper mapper;
+    @Autowired
     private JWTUtility jwtUtility;
     @Autowired
     MyDatabaseUserDetailsService userService;
 
-
-
-//    @Value("${token.expiry.threshold:2}")
-//    private Integer expiryThreshold;
-
     @Override
     public LoginResponse login(LoginRequest loginRequest) throws Exception {
-//        return Optional.of(loginRequest)
-//                .map(d -> d.withPassword(DigestUtils.sha256Hex(d.getPassword())))
-//                .flatMap(e -> userRepository.findByEmailAndPassword(e.getEmail(), e.getPassword()))
-//                .map(user -> ApiToken.builder().userId(user.getId()).expiryDate(LocalDateTime.now().plusHours(9))
-//                        .token(UUID.randomUUID().toString()).build())
-//                .map(apiTokenRepository::save)
-//                .map(g -> LoginResponse.builder().token(g.getToken()).build())
-//                .orElseThrow(( ) -> new UserLoginException("user login credentials invalid"));
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(),
                             loginRequest.getPassword()
-//                            DigestUtils.sha256Hex()
 
                     )
             );
@@ -75,7 +67,7 @@ public class AuthenticationServiceImplementor implements AuthenticationService {
                         .token(token).build();
        ApiToken savedToken= apiTokenRepository.save(tokenWIthUserId);
 
-        return   LoginResponse.builder().token(savedToken.getToken()).build();
+        return   LoginResponse.builder().token(savedToken.getToken()).firstName(bo.getFirstName()).build();
 
     }
 
@@ -83,8 +75,7 @@ public class AuthenticationServiceImplementor implements AuthenticationService {
     public void requestPasswordRequest(String email) throws KikundiEntityNotFound {
         UserBo userBo = userRepository.findByEmail(email)
                 .orElseThrow(() -> new KikundiEntityNotFound("email not registered to any customer"));
-        //Todo  create another thread to send reset password email
-
+      UserDto dto= mapper.map(userBo,UserDto.class);
+        publisher.publishEvent(new EmailEvent(dto, "2562"));
     }
-
 }

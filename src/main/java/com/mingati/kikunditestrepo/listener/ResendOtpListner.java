@@ -1,8 +1,9 @@
 package com.mingati.kikunditestrepo.listener;
 
 import com.mingati.kikunditestrepo.Configfile;
+import com.mingati.kikunditestrepo.base.UserBo;
 import com.mingati.kikunditestrepo.dto.UserDto;
-import com.mingati.kikunditestrepo.events.OtpEvent;
+import com.mingati.kikunditestrepo.events.ResendOTPEvent;
 import com.mingati.kikunditestrepo.service.UserService;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
@@ -14,15 +15,13 @@ import org.springframework.stereotype.Component;
 import java.util.Random;
 @Slf4j
 @Component
-public class OtpListener implements ApplicationListener<OtpEvent> {
-
-
+public class ResendOtpListner implements ApplicationListener<ResendOTPEvent> {
     @Autowired
     private UserService userService;
     @Override
-    public void onApplicationEvent(OtpEvent event) {
-        //Create the Verification Otp for the User with Link
-        UserDto user = event.getDto();
+    public void onApplicationEvent(ResendOTPEvent event) {
+        String userEmail = event.getDto();
+        UserBo userToResendOtp= userService.getUser(userEmail).get();
         final String ACCOUNT_SID = Configfile.ACCOUNT_SID;
         final String AUTH_TOKEN = Configfile.AUTH_TOKEN;
         Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
@@ -31,19 +30,22 @@ public class OtpListener implements ApplicationListener<OtpEvent> {
         Random random = new Random();
         int randomNumber = random.nextInt(10000);
         String otp= String.valueOf(randomNumber);
-        Message message =
-
-
-                Message.creator(
-
-                        new com.twilio.type.PhoneNumber(user.getPhone()),
+        Message message = Message.creator(
+                        new com.twilio.type.PhoneNumber(userToResendOtp.getPhone()),
                         new com.twilio.type.PhoneNumber("+12536525117"),
                         "Otp is "+randomNumber)
                 .create();
-        userService.saveVerificationOtpForUser(otp,user);
+
+        UserDto savingDTOT= UserDto.builder()
+                .email(userToResendOtp.getEmail())
+                .firstName(userToResendOtp.getFirstName())
+                .phone(userToResendOtp.getPhone())
+                .password(userToResendOtp.getPassword())
+                .build();
+        userService.saveResendVerificationOtpForxUser(otp,savingDTOT);
         //Send otp to user
         String url =
-                event.getOtp()
+                event.getDto()
                         + "/verifyRegistration?token="
                         + otp;
 

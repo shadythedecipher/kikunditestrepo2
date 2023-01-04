@@ -1,5 +1,6 @@
 package com.mingati.kikunditestrepo.base;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.util.Date;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class VerificationOtp {
 
     //Expiration time 10 minutes
@@ -30,6 +32,8 @@ public class VerificationOtp {
             nullable = false,
             foreignKey = @ForeignKey(name = "FK_USER_VERIFY_TOKEN"))
     private UserBo user;
+    @Column(nullable = false)
+    String userName;
 
 
 
@@ -44,6 +48,14 @@ public class VerificationOtp {
     public VerificationOtp(String otp) {
         super();
         this.otp = otp;
+        this.expirationTime = calculateExpirationDate(EXPIRATION_TIME);
+    }
+
+    public VerificationOtp(UserBo userbo, String otp, String email) {
+        super();
+        this.otp = otp;
+        this.user = userbo;
+        this.userName=email;
         this.expirationTime = calculateExpirationDate(EXPIRATION_TIME);
     }
 

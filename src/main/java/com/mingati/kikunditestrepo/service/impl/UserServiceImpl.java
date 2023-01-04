@@ -18,6 +18,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
@@ -98,40 +99,49 @@ public class UserServiceImpl implements UserService {
         System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
         return "valid";
     }
-    public String validateVerificationOTP(Long userId) {
-        Optional<VerificationOtp> verificationOtp
-                = verificationOtpRepository.findById( userId);
-        if (verificationOtp==null){
+    public String validateVerificationOTP(String userId, @NotEmpty String otp) {
+        VerificationOtp verificationOtp
+                = verificationOtpRepository.findByUserName( userId).get(0);
+        System.out.println("your otp is from the database" +verificationOtp.getOtp());
+        if (verificationOtp.getOtp()==null){
             return "invalid";
         }
-        VerificationOtp verifiedOTP = verificationOtp.get();
+        else{
 
-        UserBo user = verifiedOTP.getUser();
-        UserBoRole role= new UserBoRole();
-        role.setRole("User");
-        UserBoRole savedRole= userRoleRepository.save(role);
-        System.out.println("%$55$^%4%$4$5"+savedRole.getId());
+                    if(verificationOtp.getOtp().equals(otp)){
+//                        UserBo user = verifiedOTP.getUser();
+//                        UserBoRole role= new UserBoRole();
+//                        role.setRole("User");
+////                        UserBoRole savedRole= userRoleRepository.save(role);
+//                        System.out.println("%$55$^%4%$4$5"+savedRole.getId());
 
 
 //        System.out.println("$$$$$$$$$$$$"+ user.toString());
-        Calendar cal = Calendar.getInstance();
+                        Calendar cal = Calendar.getInstance();
 
-        if ((verifiedOTP.getExpirationTime().getTime()
-                - cal.getTime().getTime()) <= 0) {
-            verificationOtpRepository.delete(verifiedOTP);
-            return "expired";
+                        if ((verificationOtp.getExpirationTime().getTime()
+                                - cal.getTime().getTime()) <= 0) {
+                            verificationOtpRepository.delete(verificationOtp);
+                            return "expired";
+                        }
+//                        user.setUser(savedRole);
+//                        user.setEnabled(true);
+//                        UserBo saved= userRepository.save(user);
+//                        System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
+                        return "valid";
+                    }else{
+
+                        return "invalid";
+                    }
+
         }
-        user.setUser(savedRole);
-        user.setEnabled(true);
-       UserBo saved= userRepository.save(user);
-        System.out.println("BBBBBBBBBBBBBB$%%$#$##$#$#$4$$$$$$$$$$$$"+ saved);
-        return "valid";
+
     }
 
     @Override
     public void saveVerificationOtpForUser(String otp, UserDto user) {
         UserBo userbo=userRepository.findByEmail(user.getEmail()).get();
-        VerificationOtp otp1= new VerificationOtp(userbo,otp);
+        VerificationOtp otp1= new VerificationOtp(userbo,otp,userbo.getEmail());
         verificationOtpRepository.save(otp1);
 
     }
@@ -139,5 +149,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserBo> getUser(String username) {
         return userRepository.findByEmail(username);
+    }
+
+    @Override
+    public void saveResendVerificationOtpForxUser(String otp, UserDto savingDTOT) {
+        UserBo userbo=userRepository.findByEmail(savingDTOT.getEmail()).get();
+        List<VerificationOtp> exist = verificationOtpRepository.findByUserName(userbo.getEmail());
+        if(exist!=null){
+            verificationOtpRepository.deleteInBatch(exist);
+            System.out.println("deleteeeedddddddddddddddddddddddddddddddddddd  in the repo");
+            System.out.println("saving new user in the ellse statement otp");
+            VerificationOtp otp1= new VerificationOtp(userbo,otp,userbo.getEmail());
+            verificationOtpRepository.save(otp1);
+        }else {
+            System.out.println("saving new user in the ellse statement otp");
+            VerificationOtp otp1= new VerificationOtp(userbo,otp,userbo.getEmail());
+            verificationOtpRepository.save(otp1);
+        }
+
     }
 }

@@ -22,7 +22,7 @@ public class AuthenticationController {
     @Autowired
     private final AuthenticationService authenticationService;
 
-    @PostMapping(value = "login")
+    @PostMapping(value = "api/user/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
         if (loginRequest == null) throw new NullPointerException();
@@ -30,7 +30,7 @@ public class AuthenticationController {
         if (login == null) throw new java.util.NoSuchElementException("No value present");
         return login;
     }
-    @GetMapping(value = "/reset-password-request/{email}")
+    @GetMapping(value = "api/user/reset-password-request/{email}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<String> requestPasswordRequest(@PathVariable("email") String email) {
         return Optional.of(email)

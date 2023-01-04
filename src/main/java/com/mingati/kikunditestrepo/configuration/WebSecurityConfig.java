@@ -46,20 +46,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/configuration/security",
             "/swagger-ui.html",
             "/webjars/**",
-            "/create",
-            "/verifyRegistration",
-            "/reset-password-request/{email}",
+            "/api/user/create",
+            "/api/user/verifyRegistration",
+            "/api/user/reset-password-request/{email}",
             "/swagger-ui/" ,
             "/swagger-ui/index.html",
-            "/login",
+            "/api/user/login",
+            "/api/user/verifyOTP",
+            "/api/user/resendVerifyOTP/{email}"
 
     };
 
     private static final String[] NOT_SECURED = {
             "/actuator/health",
-            "/login",
-            "/reset-password-request",
-            "/greetings"
+            "/api/user/login",
+            "/api/user/reset-password-request",
+            "/api/user/greetings",
+            "/api/user/verifyOTP"
 
     };
 
