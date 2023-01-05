@@ -4,14 +4,13 @@ import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.security.LoginRequest;
 import com.mingati.kikunditestrepo.security.LoginResponse;
 import com.mingati.kikunditestrepo.service.AuthenticationService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,11 +24,11 @@ public class AuthenticationController {
 
     @PostMapping(value = "api/user/login")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public LoginResponse login(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) throws Exception {
         if (loginRequest == null) throw new NullPointerException();
         LoginResponse login = authenticationService.login(loginRequest);
         if (login == null) throw new java.util.NoSuchElementException("No value present");
-        return login;
+        return ResponseEntity.ok().body(login);
     }
     @GetMapping(value = "api/user/reset-password-request/{email}")
     @ResponseStatus(HttpStatus.OK)
@@ -37,11 +36,11 @@ public class AuthenticationController {
         return Optional.of(email)
                 .map(e -> {
                     authenticationService.requestPasswordRequest(e);
-                    return "Email to reset password has been sent";
+                    return ResponseEntity.ok().body( "Email to reset password has been sent");
                 })
                 .map(resp -> ApiResponse.<String>builder()
                         .hasError(false).errors(List.of())
-                        .successMessage(resp)
+                        .successMessage(resp.getBody())
                         .build()).get();
     }
 

@@ -11,6 +11,7 @@ import com.mingati.kikunditestrepo.security.LoginRequest;
 import com.mingati.kikunditestrepo.security.LoginResponse;
 import com.mingati.kikunditestrepo.service.AuthenticationService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -49,7 +50,7 @@ public class AuthenticationServiceImplementor implements AuthenticationService {
 //
 //                    )
 //               );
-                   UserBo foundUser= userRepository.findByEmailAndPassword(loginRequest.getEmail(),loginRequest.getEmail()).get();
+                   UserBo foundUser= userRepository.findByEmailAndPassword(loginRequest.getEmail(), DigestUtils.sha256Hex(loginRequest.getPassword())).get();
             String token= UUID.randomUUID().toString();
             ApiToken tokenWIthUserId= ApiToken.builder().userId(foundUser.getId()).expiryDate(LocalDateTime.now().plusHours(9))
                     .token(token).build();

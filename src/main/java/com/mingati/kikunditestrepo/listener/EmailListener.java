@@ -31,7 +31,7 @@ public class EmailListener implements ApplicationListener<EmailEvent> {
         //Send Mail to user
         String url =
                 event.getToken()
-                        + "/verifyRegistration?token="
+                        + "api/user/verifyRegistration?token="
                         + token;
 
         //sendVerificationEmail()

@@ -4,7 +4,6 @@ import com.mingati.kikunditestrepo.base.UserBo;
 import com.mingati.kikunditestrepo.dto.OTPDto;
 import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.events.EmailEvent;
-import com.mingati.kikunditestrepo.events.OtpEvent;
 import com.mingati.kikunditestrepo.events.ResendOTPEvent;
 import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.service.UserService;
@@ -30,29 +29,29 @@ public class UserController {
     ApplicationEventPublisher publisherEvent;
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "api/user/create")
-    public ApiResponse<UserDto> createCustomer(@Valid @RequestBody UserDto userdto, final HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<UserDto>> createCustomer(@Valid @RequestBody UserDto userdto, final HttpServletRequest request) {
 
         UserDto resp= service.createCustomer(userdto);
         if(resp.getEmail()==null){
-            return ApiResponse.<UserDto>builder()
+            return ResponseEntity.ok().body(ApiResponse.<UserDto>builder()
                         .responseObject(null)
                         .hasError(true)
                         .successMessage("Failed to create kikundi user")
-                        .build();
+                        .build());
 
         }else {
 
             publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
-            publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
-            return ApiResponse.<UserDto>builder()
-                        .responseObject(resp)
-                        .hasError(false)
-                        .successMessage("created successfully")
-                        .build();
+        //    publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
+            return ResponseEntity.ok().body(ApiResponse.<UserDto>builder()
+                    .responseObject(resp)
+                    .hasError(false)
+                    .successMessage("created successfully")
+                    .build());
         }
     }
 
-    @GetMapping("api/user//verifyRegistration")
+    @GetMapping("api/user/verifyRegistration")
     public ApiResponse<String> verifyRegistration(@RequestParam("token") String token) {
         String result = service.validateVerificationToken(token);
         if(result.equalsIgnoreCase("valid")) {
