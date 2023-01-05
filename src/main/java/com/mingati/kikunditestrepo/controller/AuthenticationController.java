@@ -4,14 +4,12 @@ import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.security.LoginRequest;
 import com.mingati.kikunditestrepo.security.LoginResponse;
 import com.mingati.kikunditestrepo.service.AuthenticationService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
