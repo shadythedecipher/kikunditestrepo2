@@ -1,7 +1,7 @@
 package com.mingati.kikunditestrepo.listener;
 
 import com.mingati.kikunditestrepo.dto.UserDto;
-import com.mingati.kikunditestrepo.events.EmailEvent;;
+import com.mingati.kikunditestrepo.events.EmailEvent;
 import com.mingati.kikunditestrepo.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class EmailListener implements ApplicationListener<EmailEvent> {
         //Send Mail to user
         String url =
                 event.getToken()
-                        + "api/user/verifyRegistration?token="
+                        + "/api/user/verifyRegistration?token="
                         + token;
 
         //sendVerificationEmail()

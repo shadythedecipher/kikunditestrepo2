@@ -11,8 +11,6 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 @EnableSwagger2
@@ -36,11 +34,6 @@ public class SwaggerConfig {
                 .version("1.0.0")
                 .build();
     }
-//    @Bean
-//    public LinkDiscoverers discoverers() {
-//        List<LinkDiscoverer> plugins = new ArrayList<>();
-//        plugins.add(new CollectionJsonLinkDiscoverer());
-//        return new LinkDiscoverers(SimplePluginRegistry.create(plugins));
-//    }
+
 
 }
