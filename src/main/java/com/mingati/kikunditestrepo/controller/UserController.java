@@ -6,6 +6,7 @@ import com.mingati.kikunditestrepo.dto.UserDto;
 import com.mingati.kikunditestrepo.events.EmailEvent;
 import com.mingati.kikunditestrepo.events.OtpEvent;
 import com.mingati.kikunditestrepo.events.ResendOTPEvent;
+import com.mingati.kikunditestrepo.exception.KikundiEntityNotFound;
 import com.mingati.kikunditestrepo.response.ApiResponse;
 import com.mingati.kikunditestrepo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,11 @@ public class UserController {
 
             publisherEvent.publishEvent(new EmailEvent(resp, applicationUrl(request)));
             publisherEvent.publishEvent(new OtpEvent(resp, applicationUrl(request)));
-            return ResponseEntity.ok().body(ApiResponse.<UserDto>builder().responseObject(resp).hasError(false).successMessage("created successfully").build());
+            return ResponseEntity.ok().body(ApiResponse.<UserDto>builder()
+                    .responseObject(resp)
+                    .hasError(false)
+                    .successMessage("created successfully")
+                    .build());
         }
     }
 
@@ -67,12 +72,12 @@ public class UserController {
     @PostMapping(value = "api/user/verifyOTP")
     public ApiResponse<String> verifyOTP(@Valid @RequestBody OTPDto dto) {
 
-        Optional<UserBo> userToBeVerified = service.getUser(dto.getUsername());
-        if (userToBeVerified.get().getEmail() == null) {
-
+        UserBo userToBeVerified = service.getUser(dto.getEmail())
+                 .orElseThrow(() -> new KikundiEntityNotFound("No otp for such user"));
+        if (userToBeVerified.getEmail() == null) {
             return ApiResponse.<String>builder().responseObject(null).hasError(true).successMessage("No user for the given OTP, Failed to verify OTP Try Again").build();
         } else {
-            UserBo foundUser = userToBeVerified.get();
+            UserBo foundUser = userToBeVerified;
             String result = service.validateVerificationOTP(foundUser.getEmail(), dto.getOtp());
             if (result.equalsIgnoreCase("valid")) {
                 return ApiResponse.<String>builder().responseObject(null).hasError(false).successMessage("Phone number verified successfully").build();
@@ -93,15 +98,7 @@ public class UserController {
 
     @GetMapping(value = "api/user/greetings")
     public ResponseEntity<String> greetings() {
-
         return ResponseEntity.ok().body("hi there welcome to kikundi api version 2");
     }
-
-    @GetMapping(value = "api/user/greeting")
-    public ResponseEntity<String> greeting() {
-
-        return ResponseEntity.ok().body("hi there welcome to kikundi api version 2");
-    }
-
 
 }

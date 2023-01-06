@@ -1,6 +1,7 @@
 package com.mingati.kikunditestrepo.controller.advice;
 
 import com.mingati.kikunditestrepo.exception.CreationValidationException;
+import com.mingati.kikunditestrepo.exception.KikundiEntityNotFound;
 import com.mingati.kikunditestrepo.exception.TwilioError;
 import com.mingati.kikunditestrepo.exception.UserLoginException;
 import com.mingati.kikunditestrepo.response.ApiResponse;
@@ -31,6 +32,12 @@ public class ResponseAdvice {
     }
     @ExceptionHandler(TwilioError.class)
     public ResponseEntity<ApiResponse<?>> trialErr(TwilioError ex) {
+        return new ResponseEntity<>(ApiResponse.<String>builder()
+                .errors(Collections.singletonList(ex.getMessage()))
+                .hasError(true).build(), HttpStatus.BAD_REQUEST);
+    }
+   @ExceptionHandler(KikundiEntityNotFound.class)
+    public ResponseEntity<ApiResponse<?>> userIsNotFound(KikundiEntityNotFound ex) {
         return new ResponseEntity<>(ApiResponse.<String>builder()
                 .errors(Collections.singletonList(ex.getMessage()))
                 .hasError(true).build(), HttpStatus.BAD_REQUEST);

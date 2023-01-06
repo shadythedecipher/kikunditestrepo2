@@ -32,14 +32,14 @@ public class OtpListener implements ApplicationListener<OtpEvent> {
         Twilio.setUsername(ACCOUNT_SID);
         Twilio.setPassword(AUTH_TOKEN);
         Random random = new Random();
-        int randomNumber = random.nextInt(1000000);
-        String otp = String.valueOf(randomNumber);
+        int randomNumber = random.nextInt(10000);
+        String otp = String.format("%04d", random.nextInt(10000));
         try {
             Message message =
                     Message.creator(
                             new com.twilio.type.PhoneNumber(user.getPhone()),
                             new com.twilio.type.PhoneNumber("+12536525117"),
-                            "Otp is " + randomNumber).create();
+                            "Otp is " + otp).create();
 
         } catch (TwilioException exception) {
             throw new TwilioError("On trial restrictions");

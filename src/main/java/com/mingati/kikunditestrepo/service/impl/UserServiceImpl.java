@@ -162,7 +162,6 @@ public class UserServiceImpl implements UserService {
             VerificationOtp otp1= new VerificationOtp(userbo,otp,userbo.getEmail());
             verificationOtpRepository.save(otp1);
         }else {
-            System.out.println("saving new user in the ellse statement otp");
             VerificationOtp otp1= new VerificationOtp(userbo,otp,userbo.getEmail());
             verificationOtpRepository.save(otp1);
         }

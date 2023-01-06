@@ -13,7 +13,7 @@ import javax.validation.constraints.NotEmpty;
 public class OTPDto {
     @NotEmpty(message = "OTP must not be empty")
     private String otp;
-    @NotEmpty(message = "Username must not be empty")
-    private String username;
+    @NotEmpty(message = "email must not be empty")
+    private String email;
 
 }

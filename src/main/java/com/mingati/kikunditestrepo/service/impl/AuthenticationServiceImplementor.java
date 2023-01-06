@@ -80,7 +80,7 @@ public class AuthenticationServiceImplementor implements AuthenticationService {
     public void requestPasswordRequest(String email) throws KikundiEntityNotFound {
         UserBo userBo = userRepository.findByEmail(email)
                 .orElseThrow(() -> new KikundiEntityNotFound("email not registered to any customer"));
-      UserDto dto= mapper.map(userBo,UserDto.class);
+        UserDto dto= mapper.map(userBo,UserDto.class);
         publisher.publishEvent(new EmailEvent(dto, "2562"));
     }
 }
