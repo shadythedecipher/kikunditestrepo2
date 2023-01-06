@@ -39,11 +39,11 @@ public class AuthenticationController {
         return Optional.of(email)
                 .map(e -> {
                     authenticationService.requestPasswordRequest(e);
-                    return ResponseEntity.ok().body( "Email to reset password has been sent");
+                    return ResponseEntity.ok().body( ApiResponse.builder().hasError(false).responseObject(null).errors(null).successMessage("Email to reset password has been sent").build() );
                 })
                 .map(resp -> ApiResponse.<String>builder()
                         .hasError(false).errors(List.of())
-                        .successMessage(resp.getBody())
+                        .successMessage(String.valueOf(resp.getBody()))
                         .build()).get();
     }
 
